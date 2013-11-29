@@ -15,11 +15,14 @@ TextApp.prototype.init = function(param)
 	
 	// Set up lighting
      
+    var light = new THREE.AmbientLight( 0xFFFFFF ); // soft white light
+    this.scene.add( light );
+
 	var pointLight = new THREE.PointLight( 0xFFFFFF, 1 );
 	pointLight.position.set( 0, 0, 50 );
 	this.scene.add( pointLight );
 
-	var spotLight = new THREE.SpotLight( 0xE8FF0C, 1 );
+	var spotLight = new THREE.SpotLight( 0x999999, 1 );
 	spotLight.position.set( 200, 500, 200 );
 	this.scene.add( spotLight ); 
 		
@@ -158,13 +161,13 @@ TextApp.prototype.createFloor = function()
     //var mapURL = "/treetext/imgs/15.jpg";
     //var map = THREE.ImageUtils.loadTexture(mapURL);
 
-    var grassTexture = THREE.ImageUtils.loadTexture( '/treetext/imgs/TileableGrassLarge.jpg' );
+    var grassTexture = THREE.ImageUtils.loadTexture( '/treetext/imgs/word-tile.jpg' );
     grassTexture.wrapS = grassTexture.wrapT = THREE.RepeatWrapping;
-    grassTexture.repeat.set( 96, 96 );
-    var grassMaterial = new THREE.MeshBasicMaterial( { map: grassTexture } );
+    grassTexture.repeat.set( 480, 480 );
+    var grassMaterial = new THREE.MeshBasicMaterial( { map: grassTexture, color: 0xFFFFFF, side: THREE.BackSide } );
 
 	//var plane = new THREE.Mesh( new THREE.PlaneGeometry( 3000, 3000 ), new THREE.MeshPhongMaterial( { color: 0x4F7404, specular:0xff0000, shininess:100, opacity: 1, transparent: false, map : map, overdraw: true, combine: THREE.MultiplyOperation } ) );
-    var plane = new THREE.Mesh( new THREE.PlaneGeometry( 3000, 3000 ), grassMaterial );
+    var plane = new THREE.Mesh( new THREE.PlaneGeometry( 3600, 3600 ), grassMaterial );
 	plane.rotation.x = -Math.PI/2;
 	plane.position.z = 3;
 	this.scene.add( plane );
@@ -254,7 +257,7 @@ TextObject.prototype.createTextMesh = function()
 
 	var faceMaterial = new THREE.MeshFaceMaterial();
 	var textMaterialFront = new THREE.MeshPhongMaterial( 
-			{ color: 0x4F1A04, shading: THREE.FlatShading } );
+			{ color: 0x333333, shading: THREE.FlatShading } );
 
 	var textGeometry = new THREE.TextGeometry( text, 
 			{ size: size, height: height, font: font, weight: weight, style: style,
