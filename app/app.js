@@ -13,14 +13,10 @@ TextApp.prototype.init = function(param)
 	// Call superclass init code to set up scene, renderer, default camera
 	Sim.App.prototype.init.call(this, param);
 	
-	// Set up lighting
+	// Set up lighting / ambient and four spotlights
      
     var light = new THREE.AmbientLight( 0xFFFFFF ); // soft white light
     this.scene.add( light );
-
-	//var pointLight = new THREE.PointLight( 0xFFFFFF, 1 );
-	//pointLight.position.set( 0, 0, 50 );
-	//this.scene.add( pointLight );
 
 	var spotLight1 = new THREE.SpotLight( 0x999999, 1 );
 	spotLight1.position.set( 200, 300, 200 );
@@ -39,295 +35,273 @@ TextApp.prototype.init = function(param)
     this.scene.add( spotLight4 ); 
 		
 	// Position/orient the camera
-	this.camera.position.set(0, 11, 50);
+	this.camera.position.set(0, 11, 0);
     this.camera.eulerOrder = "YXZ";
-	//this.camera.lookAt(new THREE.Vector3);
-    this.textObjects = [];
-    this.up = true;
-	// Create our text and floor
-	this.createShermanObjects();
+
+	// Create our text and floor and mesostics
+	//this.createShermanObjects();
     this.createLineObjects();
-    //this.createShelleyObjects();
+
+    /*var meso = this.createMesostic('sherman', 
+        'The next morning, leaving our luggage to come on in a cart, we started for a trip in the Plenty Ranges. The journey most of the way was up hill, but the road was good, the day fine, and we felt in harmony with our joyous surroundings.', 
+        'Any one hearing our shouting and singing, as we walked along, would know we were from Yankee-land, no mistake.', 
+        0, 
+        -200);*/
+
+    this.perimeter = Math.pow(500,2);
+
+    this.mesosticForest = [{ spine:"sherman", 
+                            lines: ['The next morning, leaving our luggage to come on in a cart, we started for a trip in the Plenty Ranges. The journey most of the way was up hill, but the road was good, the day fine, and we felt in harmony with our joyous surroundings.',
+                                    'Any one hearing our shouting and singing, as we walked along, would know we were from Yankee-land, no mistake.'],
+                            point: {x:-200,z: 0},
+                            angle: 0,
+                            generated: false },
+                            { spine:"sherman", 
+                            lines: ['We were just in the middle of "Tramp, tramp" when a long, clear whistle',
+                                    'with a crack like a pistol-shot at the end, stopped us short. Sitting down on the roadside we listened, and soon the whistle began again; then followed the most exquisite mimicry of many'],
+                            point: {x:200,z:0},
+                            angle: 0,
+                            generated: false },
+                            { spine:"sherman", 
+                            lines: ['of the songsters of the wood, varied by sounds resembling the clear tones',
+                                    'of a distant bell, the rattle of a rickety wagon, raspings and gratings that made the cold chills run down one\'s back,'],
+                            point: {x:-100,z:173.2},
+                            angle: 0,
+                            generated: false },
+                            { spine:"sherman", 
+                            lines: ['whispers, moans cries, and laughter. I clearly distinguished the coarse laugh of the giant kingfisher, the cooing of the dove, the call of the black and white shrike, the song of the rusty-backed thrush, the scream of the hawk, and the hoarse screeching of the cockatoo.',
+                                    'Sometimes the song, with a volume like a large organ, was loud and sweet, and it seemed as if the musician must be within'],
+                            point: {x:-100,z:-173.2},
+                            angle: 0,
+                            generated: false },
+                            { spine:"sherman", 
+                            lines: ['a stone\'s-throw; then, again, it died away to the faintest whisper. There was a mellow richness in parts that reminded me of the liquid notes of the clarinet.',
+                                    'We sat spellbound till the song ceased. I have heard most of our American songsters'],
+                            point: {x:100,z:173.2},
+                            angle: 0,
+                            generated: false },
+                            { spine:"sherman", 
+                            lines: ['and some of them are very fine, with voices rich and mellow; but the mocking-bird himself cannot compare',
+                                    'with this prince of songsters the Australian lyre-bird (Menura Victoriae). This one was just below us in a gully thick with tree-ferns and scrub, and we did not get sight of him. As we walked on, the trees grew larger'],
+                            point: {x:100,z:-173.2},
+                            angle: 0,
+                            generated: false },
+                            { spine:"shelley", 
+                            lines: ['It was a magnificent day. We packed up our things, bought some food and started on ahead to walk after putting our things in the cart. We walked about twelve miles to the top of the range and here waited for the man and the cart. As we climbed up we saw large flocks of parrots occasionally flying',
+                                    'overhead. Finally after about two hours the man and cart came along. It was lucky we waited for here the route left the road and went through the bush which is very high'],
+                            point: {x:0,z:-400},
+                            angle: 0,
+                            generated: false },
+                            { spine:"shelley", 
+                            lines: ['and large. Mr. Reed, the driver heard a lyre bird but it was too scary to shoot. I got one glimpse of him however and his fine tail. The only live lyre bird I ever saw.',
+                                    'We got here to Pleasant Creek about seven o\'clock and are stopping tonight in a hut with another man, a miner. The driver returned to Panton Hill after unloading our things. I never slept a wink last night on account of the fleas. I tumbled, turned, and scratched. I got up at light, blessing the souls of the cussed fleas. Mr. Miller, the miner told us of another hut about a quarter of a mile off that we might use. Sherman went off at once to look at it and came back saying'],
+                            point: {x:0,z:400},
+                            angle: 0,
+                            generated: false },
+                            { spine:"shelley", 
+                            lines: ['it was just the place. So we took all our things on our backs and moved over. It is made of palings split from trees and is a snug cabin with large ferns trees about it and some gigantic gum trees all of two hundred feet high. They are',
+                                    'the largest trees I have ever seen except in California. While we were fixing the things in the cabin I heard a lyre bird whistle'],
+                            point: {x:346.4,z:-200},
+                            angle: 0,
+                            generated: false },
+                            { spine:"shelley", 
+                            lines: ['and Sherman took his gun and went up stream and sat down and I came up through the undergrowth and scared the lyre bird up to Sherman and he shot it. In less than ten minutes after we had come here we had one! It was so cold in the night and we had only one blanket',
+                                    'apiece so we both slept together, sleeping pretty well. We smoked our blankets before going to bed and this somewhat helped to keep the fleas out. We were awakened by a noise that sounded like a lyre bird and Sherman grabbed his gun'],
+                            point: {x:-346.4,z:-200},
+                            angle: 0,
+                            generated: false },
+                            { spine:"shelley", 
+                            lines: ['and started out stocking footed after it but it proved to be a small bird that the lyre birds mock frequently. We fried some meat for breakfast and it was splendid. We went out shooting and followed up the creek away',
+                                    'but there were such massive fallen trees and thick bushes that we did not go over a mile in an hour. Finally'],
+                            point: {x:346.4,z:200},
+                            angle: 0,
+                            generated: false },
+                            { spine:"shelley", 
+                            lines: ['we climbed a ridge and I saw some king parrots and shot one and Sherman shot one. We found a large lizard and Sherman was delighted with it and killed it. We saw numbers of large trees that had been attacked by cockatoos',
+                                    'and they had ripped off cartloads of bark in search of grubs, to the height of one hundred and fifty feet in some places. Such a sight I never saw before and never imagined birds could do such a thing. The next two days we tried for lyre birds.'],
+                            point: {x:-346.4,z:200},
+                            angle: 0,
+                            generated: false },
+                            { spine:"william", 
+                            lines: ['Jupiter is by far the largest planet of the solar system, being eighty-seven thousand miles in diameter, and more than twelve hundred times as large as the earth. It has four moons, which accompany it, and revolve around it as the moon does around the earth.',
+                                    'Its gravity is so much greater, that a pound-weight on our planet would weigh about two pounds and a half if carried to Jupiter. The year of this planet is nearly twelve times as long as ours;'],
+                            point: {x:-600,z:0},
+                            angle: 0,
+                            generated: false },
+                            { spine:"william",
+                            lines: ['but its day is a little less than ten hours. The seasons are but slightly varied. Summer reigns during the whole year near the equator; while the temperate regions have a perpetual spring, and the polar regions constant winter. So rapid is the motion of Jupiter',
+                                    'Jupiter till we could have given to it more careful scrutiny. Other matters, however, crowd upon us: and I give the following fragmentary observations of Jupiter by Sherman'],
+                            point: {x:600,z:0},
+                            angle: 0,
+                            generated: false },
+                            { spine:"william", 
+                            lines: ['which are almost exclusively confined to the animals and plants of the planet, which seem to differ very considerably from ours',
+                                    'Cracks go out from it; and they are filled with something lighter colored than the mountain. As I go nearer, it is brighter: it must be lava.'],
+                            point: {x:-300,z:519.6},
+                            angle: 0,
+                            generated: false },
+                            { spine:"william", 
+                            lines: ['No : when I got nearer still, I saw it was light from somewhere else.',
+                                    'There is a wall all round the crater. There are some very stunted trees there. They are more like trees than any that I have seen on the planets before ; only the leaf is very thick. It is about four inches long, a quarter of an inch thick, and three inches wide. When you take hold of them, they'],
+                            point: {x:-300,z:-519.6},
+                            angle: 0,
+                            generated: false },
+                            { spine:"william", 
+                            lines: ['why! the tree stretches too, but only a little. I stretched one about two inches. I notice, when I pull the leaf out, the veins stand out like ridges on it. Down the mountain I see more trees.',
+                                    'sea-green color, with a large body, and two branches that curve toward each other to the top, and have a flower on the end of each. It seems as if it would break rather than bend; but it is soft, and something'],
+                            point: {x:300,z:519.6},
+                            angle: 0,
+                            generated: false },
+                            { spine:"william", 
+                            lines: ['The flower is pink; but the leaves of the flower are green. That must be a good way off: it takes me some time to travel (twenty seconds, perhaps).',
+                                    'what a curious animal I see! The mouth opens from side to side, instead of up and down. It is black, and spotted with yellow. It goes as slow as a snail. It is about three feet high. I see no legs. It is flat, round on the bottom, and moves'],
+                            point: {x:300,z:-519.6},
+                            angle: 0,
+                            generated: false }];
+
+    this.generateForest();
+
 	this.createFloor();
     this.createDome();
-    this.is_near = [false, false, false, false, false, false ];
-
-	//this.scene.fog = new THREE.Fog( 0xffffff, 50 );
+ 
 	// Other initialization
 	this.mouseDown = false;
-    this.counter = 0;
     this.debug = false;
     //watching elements
     if (this.debug) {
-    this.xloc = document.getElementById("x-loc");
-    this.yloc = document.getElementById("y-loc");
-    this.zloc = document.getElementById("z-loc");
-    this.xrot = document.getElementById("x-rot");
-    this.yrot = document.getElementById("y-rot");
-    this.zrot = document.getElementById("z-rot");
+        this.xloc = document.getElementById("x-loc");
+        this.yloc = document.getElementById("y-loc");
+        this.zloc = document.getElementById("z-loc");
+        this.xrot = document.getElementById("x-rot");
+        this.yrot = document.getElementById("y-rot");
+        this.zrot = document.getElementById("z-rot");
 
-    this.xloc.innerHTML = this.camera.position.x;
-    this.yloc.innerHTML = this.camera.position.y + "/" + this.counter;
-    this.zloc.innerHTML = this.camera.position.z;
-    this.xrot.innerHTML = this.camera.rotation.x;
-    this.yrot.innerHTML = this.camera.rotation.y;
-    this.zrot.innerHTML = this.camera.rotation.z;
+        this.xloc.innerHTML = this.camera.position.x;
+        this.yloc.innerHTML = this.camera.position.y + "/" + this.mesosticForest.length;
+        this.zloc.innerHTML = this.camera.position.z;
+        this.xrot.innerHTML = this.camera.rotation.x;
+        this.yrot.innerHTML = this.camera.rotation.y;
+        this.zrot.innerHTML = this.camera.rotation.z;
     }
 }
 
-TextApp.prototype.createTextObjectNew = function(x, z, counter)
-{
-    var text = new TextObject();
-    text.init('tramp, tramp');
-    this.addObject(text);
-    text.setPosition(x, 10, z); 
-    this.textObjects[counter] = text;
+TextApp.prototype.generateForest = function() {
+for (var i=0; i<this.mesosticForest.length; i++) {
+        this.mesosticForest[i].mesostic = this.createMesostic(  this.mesosticForest[i].spine, 
+                                                                this.mesosticForest[i].lines[0],
+                                                                this.mesosticForest[i].lines[1],
+                                                                this.mesosticForest[i].point.x,
+                                                                this.mesosticForest[i].point.z,
+                                                                this.mesosticForest[i].angle);
+        this.mesosticForest[i].generated = true;  
+    }  
 }
 
 TextApp.prototype.createLineObjects = function()
 {   
-    var lines = ['through forests of Panton Hill and Pheasant Creek', 'tramp,tramp', 'stalking, shooting, collecting', 'Away from Melbourne', 'The Plants and Animals of Jupiter', 'Sherman, aware he\'s a Yankee', 'Shelley pulled from school to paint the lecture slides'];
-    var locs = [[0,-10],[0,-50],[0,-100],[0,-150],[0,-200],[0,-250],[0,-300]];
+    var lines = [
+                    { line: 'through forests of Panton Hill and Pheasant Creek', point : {x: 0, z: -100}, angle : 0 }, 
+                    { line: 'stalking, shooting, collecting', point : {x: 0, z: 100}, angle : Math.PI},
+                    { line: 'August 1882', point : {x: 0, z: -200}, angle : 0},
+                    { line: 'tramp,tramp', point : {x: 0, z: 200}, angle : Math.PI},
+                    { line: 'Sherman and Shelley\'s current expedition', point : {x: -400, z: 0}, angle : Math.PI/2},
+                    { line: 'Sherman\'s first examinations', point : {x: 400, z: 0}, angle : -Math.PI/2},
+                    { line: 'Sherman, aware he\'s a Yankee', point : {x: -200, z: 346.4}, angle : -Math.PI*7/6},
+                    { line: 'The Plants and Animals of Jupiter', point : {x: -200, z: -346.4}, angle : Math.PI/6},
+                    { line: 'The Plants and Animals of Victoria', point : {x: 200, z: 346.4}, angle : Math.PI*7/6},
+                    { line: 'Shelley pulled from school to paint the slides', point : {x: 200, z: -346.4}, angle : -Math.PI/6}
+                ];
 
-    for (i=0;i<7;i++) {
+    for (var i=0;i<lines.length;i++) {
         var text = new TextObject();
-        text.init(lines[i]);
+        text.init(lines[i].line);
         this.addObject(text);
+        text.object3D.eulerOrder = "YXZ";
+        text.object3D.rotation.y = lines[i].angle;
         text.object3D.rotation.x = -Math.PI/3.5;
-        text.setPosition(locs[i][0], 1, locs[i][1]); 
+        text.setPosition(lines[i].point.x, 1, lines[i].point.z); 
     }
 }
 
-TextApp.prototype.createShermanObjects = function()
+TextApp.prototype.createMesostic = function(mesosticSpine, text1, text2, x, z, offsetAngle)
 {
-    // Create the heading objects
-    var text = new TextObject();
-    /*text.init('They have large eyes and can see in all directions');
-    this.addObject(text);
-    text.setPosition(0, 150, 0);
-    this.textHeading = text;*/
+    var mesosticObjectCollection = [];
+    var mesosticObject = new Compose.Mesostic(text1, mesosticSpine);
+    mesosticObject.lineLength = 24;
+    mesosticObject.generateScaffold();
+    var structuredMesostic = mesosticObject.structuredText;
 
-    //mesostic limit move to constants
-    var MESOSTIC_LIMIT = 12;
+    var mesosticObject = new Compose.Mesostic(text2, mesosticSpine);
+    mesosticObject.lineLength = 24;
+    mesosticObject.generateScaffold();
+    var ReStructuredMesostic = mesosticObject.structuredText;
 
-    //load a text file or a json file -- data?
-    //set to build based on the mesostics library
-    //var sourceText = 'I have heard most of our American songsters, and some of them are very fine, with voices rich and mellow; but the mocking-bird himself cannot compare with this prince of songsters, the Australian lyre-bird.';    
-    var sourceText = ['The next morning, leaving our luggage to come on in a cart, we started for a trip in the Plenty Ranges. The journey most of the way was up hill, but the road was good, the day fine, and we felt in harmony with our joyous surroundings.',
-'Any one hearing our shouting and singing, as we walked along, would know we were from Yankee-land, no mistake.',
-'We were just in the middle of "Tramp, tramp" when a long, clear whistle',
-'with a crack like a pistol-shot at the end, stopped us short. Sitting down on the roadside we listened, and soon the whistle began again; then followed the most exquisite mimicry of many',
-'of the songsters of the wood, varied by sounds resembling the clear tones',
-'of a distant bell, the rattle of a rickety wagon, raspings and gratings that made the cold chills run down one\'s back,',
-'whispers, moans cries, and laughter. I clearly distinguished the coarse laugh of the giant kingfisher, the cooing of the dove, the call of the black and white shrike, the song of the rusty-backed thrush, the scream of the hawk, and the hoarse screeching of the cockatoo.',
-'Sometimes the song, with a volume like a large organ, was loud and sweet, and it seemed as if the musician must be within',
-'a stone\'s-throw; then, again, it died away to the faintest whisper. There was a mellow richness in parts that reminded me of the liquid notes of the clarinet.',
-'We sat spellbound till the song ceased. I have heard most of our American songsters',
-'and some of them are very fine, with voices rich and mellow; but the mocking-bird himself cannot compare',
-'with this prince of songsters the Australian lyre-bird (Menura Victoriae). This one was just below us in a gully thick with tree-ferns and scrub, and we did not get sight of him. As we walked on, the trees grew larger'];
+    var XOFFSET = x;
+    var ZOFFSET = z;
+    var ANGLE = -Math.PI/4 + offsetAngle;
 
-    var offSets = [ 
-    [ 100, 100 ],
-    [ -100, -100 ],
-    [ -100, 100 ],
-    [ 100, -100 ],
-    [ 200, 200 ],
-    [ -200, -200 ],
-    [ -200, 200 ],
-    [ 200, -200 ],
-    [ 300, 300 ],
-    [ -300, -300 ],
-    [ -300, 300 ],
-    [ 300, -300 ]];
+    for (i=0;i<structuredMesostic.length;i++) {
+        var yOffset = ((mesosticSpine.length - i) * 10) - 5;
+        var spine = new TextObject();
+        spine.init(structuredMesostic[i][1]);
+        this.addObject(spine);
+        spine.setPosition(XOFFSET, yOffset, ZOFFSET);
+        spine.object3D.rotation.y = offsetAngle;
+        mesosticObjectCollection.push(spine);
 
-    var mesosticSpine = 'sherman';
-    
-    for (k=0; k<MESOSTIC_LIMIT; k++) {
-        var mesosticObject = new Compose.Mesostic(sourceText[k], mesosticSpine);
-        mesosticObject.lineLength = 24;
-        mesosticObject.generateScaffold();
-        var structuredMesostic = mesosticObject.structuredText;
-        mesosticObject.generateScaffold();
-        var ReStructuredMesostic = mesosticObject.structuredText;
-
-        //var XOFFSET = getRandomInt(-200, 200);
-        //var ZOFFSET = getRandomInt(-200, 200);
-        var XOFFSET = offSets[k][0] + getRandomInt(-5, 5);
-        var ZOFFSET = offSets[k][1] + getRandomInt(-5, 5);
-
-        var ANGLE = -Math.PI/4;
-
-        for (i=0;i<structuredMesostic.length;i++) {
-            var yOffset = ((mesosticSpine.length - i) * 10) - 5;
-            
-            var spine = new TextObject();
-            spine.init(structuredMesostic[i][1]);
-            this.addObject(spine);
-            spine.setPosition(XOFFSET, yOffset, ZOFFSET);
-            //build left-hand side
-            if (structuredMesostic[i][0].trim() != '') {
-                var text = new TextObject();
-                text.init(structuredMesostic[i][0]);
-                this.addObject(text);
-                textOffsetLength = (text.textWidth/2) + (spine.textWidth/2);
-                textX = XOFFSET + -(textOffsetLength * Math.cos(ANGLE));
-                textZ = ZOFFSET + textOffsetLength * Math.sin(ANGLE);    
-                text.setPosition(textX, yOffset, textZ); 
-                text.object3D.rotation.y = ANGLE;
-            }
-            //build right-hand side
-            if (structuredMesostic[i][2].trim() != '') {
-                var text = new TextObject();
-                text.init(structuredMesostic[i][2]);
-                this.addObject(text);
-                textOffsetLength = (text.textWidth/2) + (spine.textWidth/2);
-                textX = XOFFSET + textOffsetLength * Math.cos(ANGLE);
-                textZ = ZOFFSET + -(textOffsetLength * Math.sin(ANGLE));
-                text.setPosition(textX, yOffset, textZ); 
-                text.object3D.rotation.y = ANGLE;
-            }
-            if (ReStructuredMesostic[i][0].trim() != '') {
-                text = new TextObject();
-                text.init(ReStructuredMesostic[i][0]);
-                this.addObject(text);
-                textOffsetLength = (text.textWidth/2) + (spine.textWidth/2);
-                textX = XOFFSET + -(textOffsetLength * Math.cos(-ANGLE));
-                textZ = ZOFFSET + textOffsetLength * Math.sin(-ANGLE);    
-                text.setPosition(textX, yOffset, textZ); 
-                text.object3D.rotation.y = -ANGLE;
-                //this.leftText = text;
-            }
-            //build right-hand side
-            if (ReStructuredMesostic[i][2].trim() != '') {
-                var text = new TextObject();
-                text.init(ReStructuredMesostic[i][2]);
-                this.addObject(text);
-                textOffsetLength = (text.textWidth/2) + (spine.textWidth/2);
-                textX = XOFFSET + textOffsetLength * Math.cos(-ANGLE);
-                textZ = ZOFFSET + -(textOffsetLength * Math.sin(-ANGLE));
-                text.setPosition(textX, yOffset, textZ); 
-                text.object3D.rotation.y = -ANGLE;
-                //this.rightText = text;
-            }      
+        if (structuredMesostic[i][0].trim() != '') {
+            var text = new TextObject();
+            text.init(structuredMesostic[i][0]);
+            this.addObject(text);
+            textOffsetLength = (text.textWidth/2) + (spine.textWidth/2);
+            textX = XOFFSET + -(textOffsetLength * Math.cos(ANGLE));
+            textZ = ZOFFSET + textOffsetLength * Math.sin(ANGLE);    
+            text.setPosition(textX, yOffset, textZ); 
+            text.object3D.rotation.y = ANGLE;
+            mesosticObjectCollection.push(text);
         }
+        if (structuredMesostic[i][2].trim() != '') {
+            var text = new TextObject();
+            text.init(structuredMesostic[i][2]);
+            this.addObject(text);
+            textOffsetLength = (text.textWidth/2) + (spine.textWidth/2);
+            textX = XOFFSET + textOffsetLength * Math.cos(ANGLE);
+            textZ = ZOFFSET + -(textOffsetLength * Math.sin(ANGLE));
+            text.setPosition(textX, yOffset, textZ); 
+            text.object3D.rotation.y = ANGLE;
+            mesosticObjectCollection.push(text);
+        }
+        if (ReStructuredMesostic[i][0].trim() != '') {
+            text = new TextObject();
+            text.init(ReStructuredMesostic[i][0]);
+            this.addObject(text);
+            textOffsetLength = (text.textWidth/2) + (spine.textWidth/2);
+            textX = XOFFSET + -(textOffsetLength * Math.cos(-ANGLE));
+            textZ = ZOFFSET + textOffsetLength * Math.sin(-ANGLE);    
+            text.setPosition(textX, yOffset, textZ); 
+            text.object3D.rotation.y = -ANGLE;
+            mesosticObjectCollection.push(text);
+        }
+        //build right-hand side
+        if (ReStructuredMesostic[i][2].trim() != '') {
+            var text = new TextObject();
+            text.init(ReStructuredMesostic[i][2]);
+            this.addObject(text);
+            textOffsetLength = (text.textWidth/2) + (spine.textWidth/2);
+            textX = XOFFSET + textOffsetLength * Math.cos(-ANGLE);
+            textZ = ZOFFSET + -(textOffsetLength * Math.sin(-ANGLE));
+            text.setPosition(textX, yOffset, textZ); 
+            text.object3D.rotation.y = -ANGLE;
+            mesosticObjectCollection.push(text);
+        }        
     }
+    return mesosticObjectCollection;
 }
-
-TextApp.prototype.createShelleyObjects = function()
+TextApp.prototype.removeMesostic = function(mesosticTree)
 {
-    // Create the heading objects
-    var text = new TextObject();
-    /*text.init('They have large eyes and can see in all directions');
-    this.addObject(text);
-    text.setPosition(0, 150, 0);
-    this.textHeading = text;*/
-
-    //mesostic limit move to constants
-    var MESOSTIC_LIMIT = 12;
-
-    //load a text file or a json file -- data?
-    //set to build based on the mesostics library
-    //var sourceText = 'I have heard most of our American songsters, and some of them are very fine, with voices rich and mellow; but the mocking-bird himself cannot compare with this prince of songsters, the Australian lyre-bird.';    
-    var sourceText = ['The next morning, leaving our luggage to come on in a cart, we started for a trip in the Plenty Ranges. The journey most of the way was up hill, but the road was good, the day fine, and we felt in harmony with our joyous surroundings.',
-'Any one hearing our shouting and singing, as we walked along, would know we were from Yankee-land, no mistake.',
-'We were just in the middle of "Tramp, tramp" when a long, clear whistle',
-'with a crack like a pistol-shot at the end, stopped us short. Sitting down on the roadside we listened, and soon the whistle began again; then followed the most exquisite mimicry of many',
-'of the songsters of the wood, varied by sounds resembling the clear tones',
-'of a distant bell, the rattle of a rickety wagon, raspings and gratings that made the cold chills run down one\'s back,',
-'whispers, moans cries, and laughter. I clearly distinguished the coarse laugh of the giant kingfisher, the cooing of the dove, the call of the black and white shrike, the song of the rusty-backed thrush, the scream of the hawk, and the hoarse screeching of the cockatoo.',
-'Sometimes the song, with a volume like a large organ, was loud and sweet, and it seemed as if the musician must be within',
-'a stone\'s-throw; then, again, it died away to the faintest whisper. There was a mellow richness in parts that reminded me of the liquid notes of the clarinet.',
-'We sat spellbound till the song ceased. I have heard most of our American songsters',
-'and some of them are very fine, with voices rich and mellow; but the mocking-bird himself cannot compare',
-'with this prince of songsters the Australian lyre-bird (Menura Victoriae). This one was just below us in a gully thick with tree-ferns and scrub, and we did not get sight of him. As we walked on, the trees grew larger'];
-
-    var offSets = [ 
-    [ 0, -450 ],
-    [ 0, -950 ],
-    [ 0, 450 ],
-    [ 450, -450 ],
-    [ 450, 0 ],
-    [ 450, 450 ],
-    [ -450, -450 ],
-    [ -450, 0 ],
-    [ -450, 450 ],
-    [ 0, 600 ],
-    [ 0, -600 ],
-    [ 600, 0 ]];
-
-    var mesosticSpine = 'sherman';
-    
-    for (k=0; k<MESOSTIC_LIMIT; k++) {
-        var mesosticObject = new Compose.Mesostic(sourceText[k], mesosticSpine);
-        mesosticObject.lineLength = 24;
-        mesosticObject.generateScaffold();
-        var structuredMesostic = mesosticObject.structuredText;
-        mesosticObject.generateScaffold();
-        var ReStructuredMesostic = mesosticObject.structuredText;
-
-        //var XOFFSET = getRandomInt(-200, 200);
-        //var ZOFFSET = getRandomInt(-200, 200);
-        var XOFFSET = offSets[k][0] + getRandomInt(-5, 5);
-        var ZOFFSET = offSets[k][1] + getRandomInt(-5, 5);
-
-        var ANGLE = -Math.PI/4;
-
-        for (i=0;i<structuredMesostic.length;i++) {
-            var yOffset = (mesosticSpine.length - i) * 10;
-            
-            var spine = new TextObject();
-            spine.init(structuredMesostic[i][1]);
-            this.addObject(spine);
-            spine.setPosition(XOFFSET, yOffset, ZOFFSET);
-            //this.spine = spine;
-            //build left-hand side
-            if (structuredMesostic[i][0].trim() != '') {
-                var text = new TextObject();
-                text.init(structuredMesostic[i][0]);
-                this.addObject(text);
-                textOffsetLength = (text.textWidth/2) + (spine.textWidth/2);
-                textX = XOFFSET + -(textOffsetLength * Math.cos(ANGLE));
-                textZ = ZOFFSET + textOffsetLength * Math.sin(ANGLE);    
-                text.setPosition(textX, yOffset, textZ); 
-                text.object3D.rotation.y = ANGLE;
-                //this.leftText = text;
-            }
-            //build right-hand side
-            if (structuredMesostic[i][2].trim() != '') {
-                var text = new TextObject();
-                text.init(structuredMesostic[i][2]);
-                this.addObject(text);
-                textOffsetLength = (text.textWidth/2) + (spine.textWidth/2);
-                textX = XOFFSET + textOffsetLength * Math.cos(ANGLE);
-                textZ = ZOFFSET + -(textOffsetLength * Math.sin(ANGLE));
-                text.setPosition(textX, yOffset, textZ); 
-                text.object3D.rotation.y = ANGLE;
-                //this.rightText = text;
-            }
-            if (ReStructuredMesostic[i][0].trim() != '') {
-                text = new TextObject();
-                text.init(ReStructuredMesostic[i][0]);
-                this.addObject(text);
-                textOffsetLength = (text.textWidth/2) + (spine.textWidth/2);
-                textX = XOFFSET + -(textOffsetLength * Math.cos(-ANGLE));
-                textZ = ZOFFSET + textOffsetLength * Math.sin(-ANGLE);    
-                text.setPosition(textX, yOffset, textZ); 
-                text.object3D.rotation.y = -ANGLE;
-                //this.leftText = text;
-            }
-            //build right-hand side
-            if (ReStructuredMesostic[i][2].trim() != '') {
-                var text = new TextObject();
-                text.init(ReStructuredMesostic[i][2]);
-                this.addObject(text);
-                textOffsetLength = (text.textWidth/2) + (spine.textWidth/2);
-                textX = XOFFSET + textOffsetLength * Math.cos(-ANGLE);
-                textZ = ZOFFSET + -(textOffsetLength * Math.sin(-ANGLE));
-                text.setPosition(textX, yOffset, textZ); 
-                text.object3D.rotation.y = -ANGLE;
-                //this.rightText = text;
-            }        
-        }
+    for (i=0;i<mesosticTree.length;i++) {
+        this.removeObject(mesosticTree[i]);
+        mesosticTree[i] = null;
     }
 }
 
@@ -361,45 +335,42 @@ TextApp.prototype.createDome = function()
     sphere.position.set(0, 0, 0);
     this.scene.add(sphere);
 }
+TextApp.prototype.updateMesostic = function(mes) {
+    var distance = Math.pow((this.mesosticForest[mes].point.x - this.camera.position.x),2) + Math.pow((this.mesosticForest[mes].point.z - this.camera.position.z),2)
+    //check if inside the perimeter
+    if (distance < this.perimeter) {
+        //if inside the perimeter and not generated then generate the mesostic
+        
+        if (!this.mesosticForest[mes].generated) {
+            this.mesosticForest[mes].mesostic = this.createMesostic(  this.mesosticForest[mes].spine, 
+                                                        this.mesosticForest[mes].lines[0],
+                                                        this.mesosticForest[mes].lines[1],
+                                                        this.mesosticForest[mes].point.x,
+                                                        this.mesosticForest[mes].point.z,
+                                                        this.mesosticForest[i].angle);
+            this.mesosticForest[mes].generated = true;
+        }
+    } else {
+            //if outside the perimeter and generated then destroy the mesostic
+            if (this.mesosticForest[mes].generated) {
+                this.removeMesostic(this.mesosticForest[mes].mesostic);
+                this.mesosticForest[mes].generated = false;
+                this.mesosticForest[mes].mesostic = null;
+            }
+    }
+}
+
 
 TextApp.prototype.update = function()
 {
-	//this.root.rotation.z += 0.005;
-	//this.root.rotation.y += 0.005;
-    if (this.camera.position.z == -70) {
-        this.is_near = true;
-    }
-    //if ((this.camera.position.x % 100 < 2) && (this.camera.position.z % 100 < 2)) {
-    //    this.createTextObjectNew(this.camera.position.x, this.camera.position.z, this.counter);
-    //    if (this.counter > 0) {
-    //        this.removeObject(this.textObjects[this.counter-1]);
-    //        this.textObjects[this.counter-1] = null;
-    //    }
-    //    this.counter++;
-    //}
-    //if (((this.camera.position.x%100) == 0) && ((this.camera.position.z%100) == 0))) {
-     //   this.createTextObjectNew(this.camera.position.x, this.camera.position.z);
-    //}
 
-    //if (this.up && this.is_near) {
-    //    this.textObjects[0].object3D.position.y += 0.05;
-    //    this.textObjects[1].object3D.position.y += 0.05;
-    //    this.textObjects[2].object3D.position.y += 0.05;
-    //    this.textObjects[3].object3D.position.y += 0.05;
-    //    this.textObjects[4].object3D.position.y += 0.05;
-    //    if (this.textObjects[4].object3D.position.y >0) {
-    //        this.up = false;
-    //    }
-    //} else if (!this.up && this.is_near){
-    //    //this.removeObject(this.textObjects[0]);
-    //    //this.removeObject(this.textObjects[1]);
-    //    //this.removeObject(this.textObjects[2]);
-    //    //this.removeObject(this.textObjects[3]);
-    //    //this.removeObject(this.textObjects[4]);
+    //for (var i=0; i<this.mesosticForest.length; i++) {
+    //    this.updateMesostic(i);
     //}
+    
     if (this.debug) {
         this.xloc.innerHTML = this.camera.position.x;
-        this.yloc.innerHTML = this.camera.position.y + "/" + this.counter;
+        this.yloc.innerHTML = this.camera.position.y + "/" + this.mesosticForest.length;
         this.zloc.innerHTML = this.camera.position.z;
         this.xrot.innerHTML = this.camera.rotation.x;
         this.yrot.innerHTML = this.camera.rotation.y;

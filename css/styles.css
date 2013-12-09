@@ -1,23 +1,22 @@
-body {
+body { font-family:sans-serif; color:#000; background:#FFF url('/treetext/imgs/words.jpg') repeat-x; margin:0px; padding:0px; text-align:center; overflow:hidden; }
+#wrapper { position:absolute; width:100%; height:100%; top:0; }
+#container { position:absolute; width:100%; height:100%; top:0; z-index:1; }
+#header { position:absolute; height:40px; width:100%; top:0; left:0; background:transparent url('/treetext/imgs/tile.png'); color:#FFF; text-align:center; z-index:10; font-family:"Droid Serif"; font-weight:bold; font-style: italic; }
+#header h1, #footer h1 { font-size:1.5em; background-color: transparent; color: rgba(255,255,255,1.0); font-weight:normal;}
+#footer { position:absolute; height:60px; width:100%; bottom:0; left:0; background:transparent url('/treetext/imgs/tile.png'); color:#FFF; text-align:center; z-index:10; font-family:"Droid Serif"; font-weight:bold; font-style: italic; }
+#footer span { margin-right:1em; padding:0.3em; }
+#info { position: absolute; bottom:20px; right:40px; width:22px; height:22px; text-align:center; border-radius:12px; border:1px solid #FFF; color:#FFF; background-color:#000; font-size:1.1em; display:block;z-index:100;}
+#info:link, #info:visited { background-color: #000; color: #FFF; text-decoration: none; }
+#info:focus, #info:hover, #info:active { background-color: #FFF; color: #000; }
+#debug { position:absolute; top:20px; right:20px; width:110px; border-radius:20px; background-color:#000; opacity: 0.9; color:#FFF; z-index: 10; text-align: left; padding:1em; }
 
-		color:#000;
-		background:#FFF url('/treetext/imgs/words.jpg') repeat-x;
-		margin:0px;
-		padding:0px;
-		text-align:center;
-		overflow:hidden;
-}
-#wrapper {
-	position:absolute;
-	width:100%;
-	height:100%;
-	top:0;
-}
-#container {
-	position:absolute;
-	width:100%;
-	height:100%;
-	top:0;
-	/*background-color:rgba(255,255,255,0);*/
-	z-index:1;
-}
+#info-modal.open-modal { background-color:#000; color:#FFF; position:absolute; top:0; bottom:0; left:0; right:0; margin:auto; height:400px; width:600px; z-index:100; border-radius:30px; opacity:0.9; padding:20px 20px;}
+#info-modal.close-modal {display:none;}
+#info-close { position: absolute;text-align:center; width:22px; height:22px; border-radius:12px; border:1px solid #FFF; color:#FFF; background-color:#000; font-size:1.1em; display:block; z-index:101; top:10px; right:10px; font-family: sans-serif;}
+#info-close:link, #info-close:visited { background-color: #000; color: #FFF; text-decoration: none; }
+#info-close:focus, #info-close:hover, #info-close:active { background-color: #FFF; color: #000; }
+#info-modal.open-modal { text-align:left; font-family:"Droid Serif"; }
+#info-modal.open-modal p { margin:0.6em 0; }
+#info-modal.open-modal h1 {margin:0 0 1em 0;font-size:1.4em;}
+#info-modal.open-modal h2 {margin:0;padding-top:0.3em;font-size:1.0em;text-align: left;}
+#content { overflow-y: scroll; height:300px; margin-right:20px; padding-right:20px;}

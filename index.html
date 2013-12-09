@@ -3,6 +3,7 @@
 <head>
 	<meta charset="UTF-8" />
 	<title>They have large eyes and can see in all directions</title>
+	<meta name="author" content="Benjamin Laird" />
 	<link href="./css/styles.css" rel="stylesheet" />
 	<script src="./libs/Three.js"></script>
 	<script src="./libs/jquery-1.6.4.js"></script>
@@ -10,32 +11,9 @@
 	<script src="./libs/RequestAnimationFrame.js"></script>
 	<script src="./libs/compose.js"></script>
 	<script src="./sim/sim.js"></script>
-
 	<!-- instance of the app -->
-	<script src="./app/app.js?v=1.0.3"></script>
-
+	<script src="./app/app.js?v=1.0.9"></script>
 	<script src="./fonts/helvetiker_bold.typeface.js"></script>
-	<style type="text/css">
-		#header { position:absolute; height:40px; width:100%; top:0; left:0; background:transparent url('./imgs/tile.png'); color:#FFF; text-align:center; z-index:10; font-family:"Droid Serif"; font-weight:bold; font-style: italic; }
-		#header h1, #footer h1 { font-size:1.5em; background-color: transparent; color: rgba(255,255,255,1.0); font-weight:normal;}
-		#footer { position:absolute; height:60px; width:100%; bottom:0; left:0; background:transparent url('./imgs/tile.png'); color:#FFF; text-align:center; z-index:10; font-family:"Droid Serif"; font-weight:bold; font-style: italic; }
-		#footer span { margin-right:1em; padding:0.3em; }
-		#info { position: absolute; bottom:20px; right:40px; width:22px; height:22px; text-align:center; border-radius:12px; border:1px solid #FFF; color:#FFF; background-color:#000; font-size:1.1em; display:block;z-index:100;}
-		#info:hover { cursor:help; background-color: #FFF; color: #000;}
-		#debug {
-			position:absolute;
-			top:20px;
-			right:20px;
-			width:110px;
-			border-radius:20px;
-			background-color:#000;
-			opacity: 0.9;
-			color:#FFF;
-			z-index: 10;
-			text-align: left;
-			padding:1em;
-		}
-	</style>
 
 	<script>
 	var renderer = null;
@@ -47,25 +25,57 @@
 	$(document).ready(
 		function() {
 			var container = document.getElementById("container");
+			var info = document.getElementById("info");
+			var infoClose = document.getElementById("info-close");
+			info.onclick = openModal;
+			infoClose.onclick = closeModal;
 			theApp = new TextApp();
 			theApp.init({ container: container });
 			theApp.run();
+
 		}
 	);	
+
+	function openModal() {
+		var selectedModal = document.getElementById("info-modal");
+		selectedModal.className = "open-modal";
+		return false;
+	}
+	function closeModal() {
+		var selectedModal = document.getElementById("info-modal");
+		selectedModal.className = "close-modal";
+		return false;
+	}
 	</script>
 </head>
 <body>
-	<!-- fix header -->
-	<!-- <div id="header"><h1>They have large eyes and can see in all directions</h1></div> -->
-	<!-- <div id="debug">
+	<!--<div id="debug">
 		<div>x loc: <span id="x-loc"></span></div>
 		<div>y loc: <span id="y-loc"></span></div>
 		<div>z loc: <span id="z-loc"></span></div>
 		<div>x rot: <span id="x-rot"></span></div>
 		<div>y rot: <span id="y-rot"></span></div>
 		<div>z rot: <span id="z-rot"></span></div>
-	</div> -->
-    <div id="wrapper"><div id="container"></div></div>
-    <div id="footer"><h1>They have large eyes and can see in all directions</h1><a id="info">i</a></div>
+	</div>-->
+	<div id="wrapper"><div id="container"></div></div>
+    <div id="footer"><h1>They have large eyes and can see in all directions</h1><a href="#" id="info">i</a></div>
+    <div id="info-modal" class="close-modal">
+    	<a href="#" id="info-close">x</a>
+			<h1><cite>They have large eyes and can see in all directions</cite> v0.1</h1>
+	  		<p>Benjamin Laird, 2013</p>
+	  	<div id="content">
+	  		<h2>About</h2>
+	  		<p><cite>They have large eyes and can see in all directions</cite> is a work-in-progress toward a representation of William Denton through a collection of poetry in programmable media.</p>
+	  		<p>The work is a reinterpretation of texts integrated with reconstructed extracts from the books and diaries written by William Denton and his sons Sherman and Shelley's experiences in Melbourne in August 1882.</p>
+	  		<h2>Controls</h2>
+	  		<p>To look around click the mouse button and drag.</p>
+	  		<p>To move backwards and forwards scroll the mouse button.</p>
+			<h2>Sources</h2>
+			<p>Denton, S. F., 1889. <cite>Incidents of a collector's rambles in Australia, New Zealand and New Guinea</cite>. Boston: Lee and Shepard Publishers.</p>
+			<p>Denton, S. W., 1949. <cite>Pages from a naturalist's diary</cite>. Wellesley: Vanessa Denton.</p>
+			<p>Denton, W., 1874. <cite>The soul of things; or psychometric researches and discoveries, vol. 3</cite>. Boston: William Denton.</p>
+			<p>Various newspapers, August 1882.</p>
+		</div>
+	</div>
 </body>
 </html>
