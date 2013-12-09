@@ -17,10 +17,24 @@
 	<script src="./fonts/helvetiker_bold.typeface.js"></script>
 	<style type="text/css">
 		#header { position:absolute; height:40px; width:100%; top:0; left:0; background:transparent url('./imgs/tile.png'); color:#FFF; text-align:center; z-index:10; font-family:"Droid Serif"; font-weight:bold; font-style: italic; }
-		#header h1, #footer h1 { font-size:1em; background-color: transparent; color: rgba(255,255,255,1.0);}
-		#footer { position:absolute; height:40px; width:100%; bottom:0; left:0; background:transparent url('./imgs/tile.png'); color:#FFF; text-align:center; z-index:10; font-family:"Droid Serif"; font-weight:bold; font-style: italic; }
+		#header h1, #footer h1 { font-size:1.5em; background-color: transparent; color: rgba(255,255,255,1.0); font-weight:normal;}
+		#footer { position:absolute; height:60px; width:100%; bottom:0; left:0; background:transparent url('./imgs/tile.png'); color:#FFF; text-align:center; z-index:10; font-family:"Droid Serif"; font-weight:bold; font-style: italic; }
 		#footer span { margin-right:1em; padding:0.3em; }
-		#info { position: absolute; bottom:10px; right:40px; width:18px; height:18px; text-align:center; border-radius:10px; border:1px solid #FFF; color:#FFF; background-color:#000;}
+		#info { position: absolute; bottom:20px; right:40px; width:22px; height:22px; text-align:center; border-radius:12px; border:1px solid #FFF; color:#FFF; background-color:#000; font-size:1.1em; display:block;z-index:100;}
+		#info:hover { cursor:help; background-color: #FFF; color: #000;}
+		#debug {
+			position:absolute;
+			top:20px;
+			right:20px;
+			width:110px;
+			border-radius:20px;
+			background-color:#000;
+			opacity: 0.9;
+			color:#FFF;
+			z-index: 10;
+			text-align: left;
+			padding:1em;
+		}
 	</style>
 
 	<script>
@@ -43,7 +57,15 @@
 <body>
 	<!-- fix header -->
 	<!-- <div id="header"><h1>They have large eyes and can see in all directions</h1></div> -->
+	<!-- <div id="debug">
+		<div>x loc: <span id="x-loc"></span></div>
+		<div>y loc: <span id="y-loc"></span></div>
+		<div>z loc: <span id="z-loc"></span></div>
+		<div>x rot: <span id="x-rot"></span></div>
+		<div>y rot: <span id="y-rot"></span></div>
+		<div>z rot: <span id="z-rot"></span></div>
+	</div> -->
     <div id="wrapper"><div id="container"></div></div>
-    <div id="footer"><h1>They have large eyes and can see in all directions</h1><div id="info">i</div></div>
+    <div id="footer"><h1>They have large eyes and can see in all directions</h1><a id="info">i</a></div>
 </body>
 </html>
