@@ -307,10 +307,10 @@ TextApp.prototype.removeMesostic = function(mesosticTree)
 
 TextApp.prototype.createFloor = function()
 {
-    //var mapURL = "/treetext/imgs/15.jpg";
+    //var mapURL = "./imgs/15.jpg";
     //var map = THREE.ImageUtils.loadTexture(mapURL);
 
-    var grassTexture = THREE.ImageUtils.loadTexture( '/treetext/imgs/new_tile.png' );
+    var grassTexture = THREE.ImageUtils.loadTexture( './imgs/new_tile.png' );
     grassTexture.wrapS = grassTexture.wrapT = THREE.RepeatWrapping;
     grassTexture.repeat.set( 200, 200 );
     var grassMaterial = new THREE.MeshBasicMaterial( { map: grassTexture, color: 0xFFFFFF, side: THREE.BackSide } );
@@ -324,7 +324,7 @@ TextApp.prototype.createFloor = function()
 
 TextApp.prototype.createDome = function()
 {
-    var grassTexture = THREE.ImageUtils.loadTexture( '/treetext/imgs/sphere-tile.jpg' );
+    var grassTexture = THREE.ImageUtils.loadTexture( './imgs/sphere-tile.jpg' );
     grassTexture.wrapS = grassTexture.wrapT = THREE.RepeatWrapping;
     grassTexture.repeat.set( 8, 8 );
 
